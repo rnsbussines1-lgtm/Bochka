@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бочка</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+  background:#000;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
+.container{
+  text-align:center;
+}
+h1{
+  margin-bottom:20px;
+  font-size:32px;
+}
+.barrel{
+  width:220px;
+  height:320px;
+  margin:0 auto;
+  border-radius:50px;
+  background:linear-gradient(180deg,#222,#444,#222);
+  border:4px solid #666;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 30px rgba(255,255,255,0.15);
+}
+.number{
+  position:absolute;
+  width:100%;
+  text-align:center;
+  font-size:42px;
+  font-weight:bold;
+  bottom:20px;
+  transition:all 0.8s ease;
+}
+.hint{
+  margin-top:25px;
+  font-size:22px;
+  opacity:0.8;
+  animation:upDown 1s infinite;
+}
+
+@keyframes upDown{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+  100%{transform:translateY(0)}
+}
+.message{
+  margin-top:20px;
+  font-size:20px;
+  color:#00ff99;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Бочка</h1>
+  <div class="barrel">
+    <div class="number" id="number">1</div>
+  </div>
+  <div class="hint">☝️ Проведи пальцем вверх</div>
+  <div class="message" id="message"></div>
+</div>
+
+<script>
+let startY = 0;
+
+const barrel = document.querySelector('.barrel');
+
+barrel.addEventListener('touchstart', (e)=>{
+  startY = e.touches[0].clientY;
+});
+
+barrel.addEventListener('touchend', (e)=>{
+  let endY = e.changedTouches[0].clientY;
+
+  if(startY - endY > 50){
+    spinBarrel();
+  }
+});
+
+barrel.addEventListener('mousedown', (e)=>{
+  startY = e.clientY;
+});
+
+barrel.addEventListener('mouseup', (e)=>{
+  let endY = e.clientY;
+
+  if(startY - endY > 50){
+    spinBarrel();
+  }
+});
+
+let current = 1;
+
+function spinBarrel(){
+  const rand = Math.random();
+
+  if(rand < 0.50){
+    current *= 2;
+  } else if(rand < 0.75){
+    current *= 10;
+  } else if(rand < 0.90){
+    current *= 100;
+  } else if(rand < 0.98){
+    current *= 1000;
+  } else if(rand < 0.9999){
+    current *= 1000000;
+  } else {
+    current = 1000000000000; // триллион (очень редко)
+  }
+
+  if(current > 1000000000000){
+    current = 1000000000000;
+  }
+
+  const numberEl = document.getElementById('number');
+  numberEl.style.bottom = '250px';
+
+  setTimeout(()=>{
+    numberEl.textContent = current.toLocaleString('ru-RU');
+    numberEl.style.bottom = '20px';
+  },400);
+
+  if(current === 1000000000000){
+    document.getElementById('message').textContent = '🔥 Ты достиг ТРИЛЛИОНА и выиграл!';
+  }
+}
+</script>
+
+</body>
+</html>
